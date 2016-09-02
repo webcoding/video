@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<meta charset="utf-8"> 
+<title>Video 简单玩</title> 
+</head>
+<body>
+
+<div style="text-align:center">
+  <button onclick="playPause()">播放/暂停</button>
+  <button onclick="makeBig()">放大</button>
+  <button onclick="makeSmall()">缩小</button>
+  <button onclick="makeNormal()">普通</button>
+  <br>
+  <video id="myVideo" width="420" controls preload="auto"
+    poster="http://img0.ph.126.net/I10JqUUJDmlEtE_XYl4hOg==/6608842237655242020.jpg"
+    >
+    <source src="http://www.w3school.com.cn/example/html5/mov_bbb.mp4" type="video/mp4">
+    <source src="http://www.w3school.com.cn/example/html5/mov_bbb.ogg" type="video/ogg">
+    您的浏览器不支持 HTML5 video 标签。
+  </video>
+</div>
+
+<script>
+var myVideo = document.getElementById('myVideo')//获取video元素
+    ,tol = 0 //总时长
+;
+myVideo.addEventListener("loadedmetadata", function(){
+  tol = myVideo.duration;//获取总时长
+});
+
+function playPause(){
+  if (myVideo.paused)
+    myVideo.play();
+  else
+    myVideo.pause();
+}
+
+function makeBig(){
+  myVideo.width=560;
+}
+
+function makeSmall(){
+  myVideo.width=320;
+}
+
+function makeNormal(){
+  myVideo.width=420;
+}
+
+
+//参看：
+// http://my.oschina.net/tearlight/blog/351244
+
+//播放时间点更新时
+myVideo.addEventListener("timeupdate", function(){
+  var currentTime = myVideo.currentTime;//获取当前播放时间
+  console.log(currentTime);//在调试器中打印
+});
+
+//设置播放点
+function playBySeconds(num){
+  myVideo.currentTime = num;
+}
+
+//音量改变时
+myVideo.addEventListener("volumechange", function(){
+  var volume = myVideo.volume;//获取当前音量
+  console.log(volume);//在调试器中打印
+});
+
+//设置音量
+function setVol(num){
+  myVideo.volume = num;
+}
+</script>
+
+</body>
+</html>

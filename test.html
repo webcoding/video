@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WebKit video playback statistics</title>
+</head>
+<body>
+<!--
+  参看：
+  http://stackoverflow.com/questions/12895088/detect-current-bitrate-of-http-live-streaming-in-safari
+
+  https://wiki.whatwg.org/wiki/Video_Metrics
+  http://stackoverflow.com/questions/11331907/html5-video-detecting-bandwidth
+  https://www.w3.org/Bugs/Public/show_bug.cgi?id=17896
+ -->
+
+<!-- inspired by --
+  -- http://people.mozilla.org/~cpearce/paint-stats-demo.html -->
+  <video id='video'
+     controls autoplay preload='none'
+    mediagroup='myVideoGroup'
+    poster="https://media.w3.org/2010/05/sintel/poster.png">
+  <!--
+    <source id='mp4'
+      src="../sintel/trailer.mp4"
+      type='video/mp4'>
+    <source id='webm'
+      src="../sintel/trailer.webm"
+      type='video/webm'>
+  -->
+    <source id='mp4'
+      src="https://media.w3.org/2010/05/sintel/trailer.mp4"
+      type='video/mp4'>
+    <source id='webm'
+      src="https://media.w3.org/2010/05/sintel/trailer.webm"
+      type='video/webm'>
+    <source id='ogv'
+      src="https://media.w3.org/2010/05/sintel/trailer.ogv"
+      type='video/ogg'>
+
+    <p>Your user agent does not support the HTML5 Video element.</p>
+  </video>
+<!-- <video src="http://movies.apple.com/movies/us/apple/ipoditunes/2007/touch/ads/apple_ipodtouch_touch_r640-9cie.mov" id="v"></video> -->
+<!-- <video id="video1" controls="controls">
+  <source src="/example/html5/mov_bbb.mp4" type="video/mp4">
+  <source src="/example/html5/mov_bbb.ogg" type="video/ogg">
+  Your browser does not support HTML5 video.
+</video> -->
+<div id="log">
+    Audio bytes decoded: 0 average p/s: 0<br>
+    Video bytes decoded: 0 average p/s: 0<br>
+    Decoded frames: 0 average p/s: 0<br>
+    Dropped frames: 0 average p/s: 0<br>
+</div>
+<script>
+
+var decodedFrames = 0;
+var decodedPerSec = 0;
+var audioBytesDecoded = 0;
+var audioBytesDecodedPerSec = 0;
+var videoBytesDecoded = 0;
+var videoBytesDecodedPerSec = 0;
+var droppedFrames = 0;
+var droppedFramesPerSec = 0;
+
+function Mean() {
+  this.count = 0;
+  this.sum = 0;
+
+  this.record = function(val) {
+    this.count++;
+    this.sum += val;
+  };
+
+  this.mean = function() {
+    return this.count ? (this.sum / this.count).toFixed(3) : 0;
+  };
+}
+
+
+var decodedMean = new Mean();
+var audioMean = new Mean();
+var videoMean = new Mean();
+var dropMean = new Mean();
+
+function recalcRates() {
+  var v = document.getElementById("video");
+
+  if (v.readyState <= HTMLMediaElement.HAVE_CURRENT_DATA || v.paused) {
+    return;
+  }
+
+  decodedPerSec = (v.webkitDecodedFrameCount - decodedFrames);
+  decodedFrames = v.webkitDecodedFrameCount;
+
+  audioBytesDecodedPerSec = v.webkitAudioDecodedByteCount - audioBytesDecoded;
+  audioBytesDecoded = v.webkitAudioDecodedByteCount;
+
+  videoBytesDecodedPerSec = v.webkitVideoDecodedByteCount - videoBytesDecoded;
+  videoBytesDecoded = v.webkitVideoDecodedByteCount;
+
+  droppedFramesPerSec = v.webkitDroppedFrameCount - droppedFrames;
+  droppedFrames = v.webkitDroppedFrameCount;
+
+  decodedMean.record(decodedPerSec);
+  audioMean.record(audioBytesDecodedPerSec);
+  videoMean.record(videoBytesDecodedPerSec);
+  dropMean.record(droppedFramesPerSec);
+
+  var d = document.getElementById("log");
+  d.innerHTML =
+        "Audio bytes decoded: " + v.webkitAudioDecodedByteCount + " average p/s: " + audioMean.mean() + "<br>" +
+        "Video bytes decoded: " + v.webkitVideoDecodedByteCount + " average p/s: " + videoMean.mean() + "<br>" +
+        "Decoded frames: " + v.webkitDecodedFrameCount + " average p/s: " + decodedMean.mean() + "<br>" +
+        "Dropped frames: " + v.webkitDroppedFrameCount + " average p/s: " + dropMean.mean() + "<br>";
+}
+
+setInterval(recalcRates, 1000);
+</script>
+</body>
+</html>
