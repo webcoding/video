@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+  <title>video_event</title>
+  <style>
+  a{
+    font-size: 3em;
+  }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <video src="http://www.weishi.com/api/videoUrl.php?id=2002056024606580&vid=1008_7702d774fd7443a9b0030112caa58331&sid=25306217c82b3b5c8c8a5a8e3414bb0f" id="v2" preload="none" loop webkit-playsinline width="200" height="200"></video>
+    <!-- <video src="http://vliveachy.tc.qq.com/vweishi.tc.qq.com/1015_e02c6956f0e340a991add0624526c5b3.f20.mp4?vkey=DEFDEF1F487BAA5CBC6F37FE0FCE8CEF4759C8B2A75662290D04C2081C4B93DE31A2CA0B0BE0420C&sha=10d0841868803b6683c2a56a1bef581f2bc42065&ocid=350101420&ocid=210247596" id="v2" preload="none" loop webkit-playsinline width="200" height="200"></video> -->
+    <a href="###" id="v2-play" onclick="v2.play()">播放</a>
+    <a href="###" id="" onclick="v2.pause()">暂停</a>
+    <a href="###" onclick="logON()">LOG ON</a>
+    <a href="###" onclick="logOFF()">LOG OFF</a>
+  </div>
+  <div id="log" style="font-family:微软雅黑;font-size:13px;width:100%;">
+  </div>
+</body>
+<script>
+
+  var LOG_SWITCH = true
+
+  var network = ['EMPTY', 'IDLE', 'LOADING', 'NO_SOURCE'];
+
+  var readyState = ['NOTHING', 'METADATA', 'CURRENT_DATA', 'FUTURE_DATA', 'ENOUGH_DATA']
+
+  var eventsOrder = []
+
+  //日志记录高亮配置
+  var highLight = {
+    'loadstart': '',
+    'suspend': '',
+    'play': '',
+    'waiting': '',
+    'progress': '#DDC508',
+    'durationchange': '',
+    'loadedmetadata': '',
+    'loadeddata': '',
+    'canplay': '',
+    'playing': '#F50000',
+    'canplaythrough': '#FF8918',
+    'timeupdate': '#07BC01',
+    'pause': '',
+    'seeking': '',
+    'seeked': '',
+    'error': '#BC5C5C',
+    'ended': '',
+    'stalled': '#D643C5',
+    'ratechange': '',
+    'emptied': ''
+  }
+
+  function logOFF() {
+    LOG_SWITCH = false
+  }
+
+  function logON() {
+    LOG_SWITCH = true
+  }
+
+  function textAlign(str, width, eName) {
+    var color = highLight[eName] || '#FFF'
+    return '<span style="display:inline-block;width:'+width+';background-color:'+color+'">'+str+'</span>'
+  }
+
+  function log() {
+    var arg = Array.prototype.slice.call(arguments)
+    arg.unshift('</br>')
+    var log = arg.join(''),
+      logDiv = document.getElementById('log')
+
+    logDiv.innerHTML +=log
+  }
+
+  var counter = 1
+  function printState(eName, domVideo, event) {
+    if (LOG_SWITCH) {
+      // log(textAlign('id->', 30), textAlign(counter++, 50),
+      //   textAlign('eventName->', 100), textAlign(eName, 120),
+      //   textAlign('network->', 80), textAlign(network[domVideo.networkState], 120),
+      //   textAlign('readyState->', 90), textAlign(readyState[domVideo.readyState], 130),
+      //   textAlign('currentTime->', 100), textAlign(domVideo.currentTime, 150))
+
+      log(textAlign(counter++, '5%', eName),
+        textAlign(eName, '25%', eName),
+        /**textAlign(network[domVideo.networkState], '20%'),*/
+        textAlign(readyState[domVideo.readyState], '25%', eName),
+        textAlign(parseInt(domVideo.currentTime * 100) / 100, '15%', eName),
+        textAlign(domVideo.buffered && domVideo.buffered.length ? (parseInt(domVideo.buffered.end(0) * 100) / 100) : 'null', '15%', eName),
+        textAlign(parseInt(domVideo.duration * 100) / 100, '15%', eName))
+
+      var logDiv = document.getElementById('log')
+      logDiv.scrollTop = logDiv.scrollTop + logDiv.scrollHeight
+    }
+  }
+
+  function eventHandler(event){
+    printState(event.type, v2, event)
+  }
+
+  var v2 = document.getElementById('v2')
+
+
+  v2.addEventListener('loadstart', eventHandler)
+  v2.addEventListener('suspend', eventHandler)
+  v2.addEventListener('play', eventHandler)
+  v2.addEventListener('waiting', eventHandler)
+  v2.addEventListener('progress', eventHandler)
+  v2.addEventListener('durationchange', eventHandler)
+  v2.addEventListener('loadedmetadata', eventHandler)
+  v2.addEventListener('loadeddata', eventHandler)
+  v2.addEventListener('canplay', eventHandler)
+  v2.addEventListener('playing', eventHandler)
+  v2.addEventListener('canplaythrough', eventHandler)
+  v2.addEventListener('timeupdate', eventHandler)
+  v2.addEventListener('pause', eventHandler)
+  v2.addEventListener('seeking', eventHandler)
+  v2.addEventListener('seeked', eventHandler)
+  v2.addEventListener('error', eventHandler)
+  v2.addEventListener('ended', eventHandler)
+  v2.addEventListener('stalled', eventHandler)
+  v2.addEventListener('ratechange', eventHandler)
+  v2.addEventListener('emptied', eventHandler)
+
+  /*v2.addEventListener('durationchange', function() {
+    if(v2.duration) {
+      v2.pause()
+    }
+  })*/
+
+
+  // v2.onloadstart = eventHandler
+  // v2.onsuspend = eventHandler
+  // v2.onplay = eventHandler
+  // v2.onwaiting = eventHandler
+  // v2.onprogress = eventHandler
+  // v2.ondurationchange = eventHandler
+  // v2.onresize = eventHandler
+  // v2.onloadedmetadata = eventHandler
+  // v2.onloadeddata = eventHandler
+  // v2.oncanplay = eventHandler
+  // v2.onplaying = eventHandler
+  // v2.oncanplaythrough = eventHandler
+  // v2.ontimeupdate = eventHandler
+  // v2.onpause = eventHandler
+  // v2.onseeking = eventHandler
+  // v2.onseeked = eventHandler
+
+  // document.body.innerHTML += 'testsetset'
+</script>
+</html>
