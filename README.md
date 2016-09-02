@@ -8,3 +8,4 @@
 - [W3C video 标准](http://www.w3.org/TR/html5/embedded-content-0.html#the-video-element)
 - [如何在iOS7+的webview中内联播放视频](http://darktalker.com/2014/play-video-inline-iphone-ios7)
 - [视频事件流水查看工具](http://z.weishi.qq.com/app/video.html)
+- [Audio_and_video_delivery/buffering_seeking_time_ranges](https://developer.mozilla.org/en-US/Apps/Fundamentals/Audio_and_video_delivery/buffering_seeking_time_ranges)
