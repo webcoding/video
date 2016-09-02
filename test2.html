@@ -19,6 +19,11 @@
     <source src="http://www.w3school.com.cn/example/html5/mov_bbb.ogg" type="video/ogg">
     您的浏览器不支持 HTML5 video 标签。
   </video>
+  <p>currentTime: <span id="currentTime"></span></p>
+  <p>webkitAudioDecodedByteCount: <span id="webkitAudioDecodedByteCount"></span></p>
+  <p>webkitDecodedFrameCount: <span id="webkitDecodedFrameCount"></span></p>
+  <p>webkitVideoDecodedByteCount: <span id="webkitVideoDecodedByteCount"></span></p>
+  <p>webkitDroppedFrameCount: <span id="webkitDroppedFrameCount"></span></p>
 </div>
 
 <script>
@@ -55,7 +60,7 @@ function makeNormal(){
 //播放时间点更新时
 myVideo.addEventListener("timeupdate", function(){
   var currentTime = myVideo.currentTime;//获取当前播放时间
-  console.log(currentTime);//在调试器中打印
+  console.log('点击更新了时间点：', currentTime);//在调试器中打印
 });
 
 //设置播放点
@@ -73,6 +78,52 @@ myVideo.addEventListener("volumechange", function(){
 function setVol(num){
   myVideo.volume = num;
 }
+
+myVideo.addEventListener("loadedmetadata", function(e){
+  //当收到总时长，分辨率和字轨等 metadata 时产生该事件
+  var target = e.target;
+  console.log(e);
+  console.log('video 总时间: ', target.duration);
+  console.log('video 显示宽高: ', target.clientWidth, target.clientHeight);
+  console.log('video 真实宽高: ', target.videoHeight, target.videoHeight);
+  console.log('webkitAudioDecodedByteCount: ', target.webkitAudioDecodedByteCount);
+  console.log('webkitDecodedFrameCount: ', target.webkitDecodedFrameCount);
+  console.log('webkitVideoDecodedByteCount: ', target.webkitVideoDecodedByteCount);
+  console.log('webkitDroppedFrameCount: ', target.webkitDroppedFrameCount);
+});
+myVideo.addEventListener("loadeddata", function(e){
+  //当加载媒体数据时产生该事件
+  var target = e.target;
+  console.log(e);
+  console.log('video 显示宽高: ', target.clientWidth, target.clientHeight);
+  console.log('video 真实宽高: ', target.videoHeight, target.videoHeight);
+  console.log('webkitAudioDecodedByteCount: ', target.webkitAudioDecodedByteCount);
+  console.log('webkitDecodedFrameCount: ', target.webkitDecodedFrameCount);
+  console.log('webkitVideoDecodedByteCount: ', target.webkitVideoDecodedByteCount);
+  console.log('webkitDroppedFrameCount: ', target.webkitDroppedFrameCount);
+});
+function getId(id){
+  return document.getElementById(id);
+}
+var currentTime = getId('currentTime');
+var webkitAudioDecodedByteCount = getId('webkitAudioDecodedByteCount');
+var webkitDecodedFrameCount = getId('webkitDecodedFrameCount');
+var webkitVideoDecodedByteCount = getId('webkitVideoDecodedByteCount');
+var webkitDroppedFrameCount = getId('webkitDroppedFrameCount');
+myVideo.addEventListener("progress", function(e){
+  var target = e.target;
+  console.log(target.buffered.length);
+  console.log(target.seekable.length);
+  console.log(target.seeking);
+  currentTime.innerText = target.currentTime;
+  webkitAudioDecodedByteCount.innerText = target.webkitAudioDecodedByteCount;
+  webkitDecodedFrameCount.innerText = target.webkitDecodedFrameCount;
+  webkitVideoDecodedByteCount.innerText = target.webkitVideoDecodedByteCount;
+  webkitDroppedFrameCount.innerText = target.webkitDroppedFrameCount;
+  // console.log(target.buffered.start(0));
+  // console.log(target.buffered.end(0));
+});
+
 </script>
 
 </body>
