@@ -85,7 +85,7 @@ myVideo.addEventListener("loadedmetadata", function(e){
   console.log(e);
   console.log('video 总时间: ', target.duration);
   console.log('video 显示宽高: ', target.clientWidth, target.clientHeight);
-  console.log('video 真实宽高: ', target.videoHeight, target.videoHeight);
+  console.log('video 真实宽高: ', target.videoWidth, target.videoHeight);
   console.log('webkitAudioDecodedByteCount: ', target.webkitAudioDecodedByteCount);
   console.log('webkitDecodedFrameCount: ', target.webkitDecodedFrameCount);
   console.log('webkitVideoDecodedByteCount: ', target.webkitVideoDecodedByteCount);
@@ -96,7 +96,7 @@ myVideo.addEventListener("loadeddata", function(e){
   var target = e.target;
   console.log(e);
   console.log('video 显示宽高: ', target.clientWidth, target.clientHeight);
-  console.log('video 真实宽高: ', target.videoHeight, target.videoHeight);
+  console.log('video 真实宽高: ', target.videoWidth, target.videoHeight);
   console.log('webkitAudioDecodedByteCount: ', target.webkitAudioDecodedByteCount);
   console.log('webkitDecodedFrameCount: ', target.webkitDecodedFrameCount);
   console.log('webkitVideoDecodedByteCount: ', target.webkitVideoDecodedByteCount);
