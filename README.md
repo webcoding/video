@@ -1,7 +1,11 @@
 # js_video
 学习 video 相关知识
 
-参考：
+本意是想研究下，video 在播放时，显示下载速度，但综合来看，并没有一个属性来支持，具体方案还是提案阶段，详见[https://wiki.whatwg.org/wiki/Video_Metrics#bytesReceived](https://wiki.whatwg.org/wiki/Video_Metrics#bytesReceived)，如若实现模拟的下载效果，暂可用解码速度来做个假的展示，webkitAudioDecodedByteCount 以及webkitVideoDecodedByteCount来做个数据模拟，参看 test2.html，更真实的效果，再结合buffered属性，深入了解后，通过缓冲数据，可以更真实一点点。但成效以及开发投入成本，个人觉得，没必要为本就假的东西搞很多的开发投入。
+
+以下是 video 相关的各种文档，可供参考
+
+参考列表：
 
 - [移动端HTML5<video>视频播放优化实践](http://www.xuanfengge.com/html5-video-play.html)
 - [HTML5 Video Events and API检测工具](http://www.w3.org/2010/05/video/mediaevents.html)
