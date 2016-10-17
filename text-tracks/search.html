@@ -1,0 +1,118 @@
+<!-- source: http://demo.jwplayer.com/text-tracks/search.html -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Timeline Search</title>
+  <style>
+    body { font: 12px/20px sans-serif; margin:0; padding:0; }
+    a { color: #666; }
+    a:hover { color: #C00; }
+    section, footer, form { width:480px; margin:20px auto; }
+    section { box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+    video {  cursor:pointer; background: #000; }
+    footer { text-align:center; color: #666; }
+
+    form { text-align: center; }
+    input { width: 240px; }
+    button { width: 120px;  }
+
+    #bar {
+      position: relative;
+      cursor: pointer;
+      background: #000;
+      color: #CCC;
+      line-height:40px;
+      height:40px;
+      text-indent: 20px;
+    }
+    #bar span {
+      pointer-events: none;
+      display: block;
+      position: absolute;
+      top: 0;
+      background-color: #C00;
+      height: 40px;
+      width: 4px;
+    }
+  </style>
+</head>
+<body>
+
+
+
+<section>
+  <video width="480" height="204" poster="assets/sintel.jpg">
+    <source src="https://content.jwplatform.com/videos/q1fx20VZ-kNspJqnJ.mp4" type="video/mp4">
+    <source src="https://content.jwplatform.com/videos/q1fx20VZ-27m5HpIu.webm" type="video/webm">
+    <track src="assets/captions.vtt" kind="metadata" default>
+    A browser with <a href="http://www.jwplayer.com/html5/">HTML5 text track support</a> is required.
+  </video>
+  <div id="bar">Search e.g. for "blade", "music" or "chicken"</div>
+</section>
+
+<form>
+    <input type="search" />
+    <button type="submit">Search</button>
+</form>
+
+<footer>
+  These code examples feature <a href="http://sintel.org/">Sintel</a>, the third Blender Open Movie Project.<br>
+  Permalinks: <a href="chapters.html">Chapter Markers</a>, <a href="thumbs.html">Preview Thumbnails</a>, <a href="search.html">Timeline Search</a>.
+</footer>
+
+
+
+<script type="text/javascript">
+  var vid =  document.querySelector("video");
+  var bar =  document.querySelector("#bar");
+  var frm =  document.querySelector("form");
+
+  vid.addEventListener('click',play, false);
+  vid.addEventListener('timeupdate',update, false);
+  bar.addEventListener('click',seek, false);
+  frm.addEventListener('submit',search, false);
+
+  function play() {
+    if(vid.paused) { vid.play(); } else { vid.pause(); }
+  };
+
+  function update() {
+    var pct = vid.currentTime/vid.duration*100;
+    bar.style.background = "linear-gradient(to right, #500 "+pct+"%, #000 "+pct+"%)";
+  };
+
+  function search(e) {
+    // prevent reload, grab cues+query
+    e.preventDefault();
+    var a = [];
+    var c = vid.textTracks[0].cues;
+    var q = document.querySelector("input").value.toLowerCase();
+    // search captions for query
+    for(var j=0; j<c.length; j++) {
+      if(c[j].text.toLowerCase().indexOf(q) > -1) {
+        a.push(c[j]);
+      }
+    }
+    // update bar text
+    if(a.length) {
+      bar.innerHTML = '';
+    } else {
+      bar.innerHTML = 'No results found...';
+    }
+    // place results on bar
+    for (var i=0; i<a.length; i++) {
+      var s = document.createElement("span");
+      s.style.left = (a[i].startTime/vid.duration*480-2)+"px";
+      bar.appendChild(s);
+    }
+  };
+
+  function seek(e) {
+    vid.currentTime = (e.pageX-bar.offsetLeft)*vid.duration/480;
+    if(vid.paused) { vid.play(); }
+  };
+
+</script>
+
+</body>
+</html>

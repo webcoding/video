@@ -1,0 +1,102 @@
+<!-- source: http://demo.jwplayer.com/text-tracks/chapters.html -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chapter Markers</title>
+  <style>
+    body { font: 12px/20px sans-serif; margin:0; padding:0; }
+    section, footer { width:480px; margin:20px auto; }
+    video { box-shadow: 0 0 5px rgba(0,0,0,0.5); background: #000; cursor: pointer; }
+    footer { text-align: center; color: #666; clear: both; }
+    footer a { color:#666; }
+    footer a:hover { color: #C00; }
+
+    #bar {
+      position: relative;
+      cursor: pointer;
+      background: #000;
+      color: #CCC;
+      height:40px;
+    }
+    #bar span {
+      border-left: 1px solid #555;
+      display: block;
+      float: left;
+      height: 28px;
+      overflow: hidden;
+      padding: 6px 3px;
+      line-height: 14px;
+    }
+    #bar span:hover {
+      color: #C00;
+    }
+    #bar span:nth-child(1) {
+      border-left: none;
+    }
+  </style>
+</head>
+<body>
+
+
+
+
+<section>
+
+  <video width="480" height="204" poster="assets/sintel.jpg">
+    <source src="https://content.jwplatform.com/videos/q1fx20VZ-kNspJqnJ.mp4" type="video/mp4">
+    <source src="https://content.jwplatform.com/videos/q1fx20VZ-27m5HpIu.webm" type="video/webm">
+    <track src="assets/chapters.vtt" kind="chapters" default>
+    A browser with <a href="http://www.jwplayer.com/html5/">HTML5 text track support</a> is required.
+  </video>
+
+  <div id="bar"></div>
+
+</section>
+
+<footer>
+  These code examples feature <a href="http://sintel.org/">Sintel</a>, the third Blender Open Movie Project.<br>
+  Permalinks: <a href="chapters.html">Chapter Markers</a>, <a href="thumbs.html">Preview Thumbnails</a>, <a href="search.html">Timeline Search</a>.
+</footer>
+
+
+
+<script type="text/javascript">
+  var v = document.querySelector("video");
+  var t = document.querySelector("track");
+  var b = document.querySelector("#bar");
+
+  v.addEventListener('click',play,false);
+  v.addEventListener('timeupdate',update,false);
+  t.addEventListener('loaded',render,false); // Bug in FF31 MAC: wrong event name
+  t.addEventListener('load',render,false);
+
+  function play() {
+    if(v.paused) { v.play(); } else { v.pause(); }
+  }
+
+  function update() {
+    var p = v.currentTime/v.duration*100;
+    b.style.background = "linear-gradient(to right, #500 "+p+"%, #000 "+p+"%)";
+  }
+
+  function render() {
+    var c = v.textTracks[0].cues;
+    for (var i=0; i<c.length; i++) {
+      var s = document.createElement("span");
+      s.innerHTML = c[i].text;
+      s.setAttribute('data-start',c[i].startTime);
+      s.style.width = ((c[i].endTime-c[i].startTime)/888*480-7)+'px';
+      s.addEventListener("click",seek);
+      b.appendChild(s);
+    }
+  }
+
+  function seek(e) {
+    v.currentTime = this.getAttribute('data-start');
+    if(v.paused) { v.play(); }
+  }
+
+</script>
+
+</body>
+</html>
